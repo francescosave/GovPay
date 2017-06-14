@@ -19,6 +19,9 @@
  */
 package it.govpay.web.rs.dars.anagrafica.operatori;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -78,6 +81,22 @@ public class Operatori extends BaseDarsService {
 
 			// Reset ID DB
 			operatore.setId(null);
+			
+			// Info profilazione LDAP
+			List<String> ruoli = new ArrayList<String>();
+			
+			List<String> ruoliAccettati = new ArrayList<String>();
+			ruoliAccettati.add("ADMIN");
+			ruoliAccettati.add("OPERATORE");
+			ruoliAccettati.add("APP_GOVPAY_VISUALIZZA");
+			
+			for (String ruoloAccettato : ruoliAccettati) {
+				boolean userInRole = this.request.isUserInRole(ruoloAccettato);
+				if(userInRole)
+					ruoli.add(ruoloAccettato);
+			}
+			
+			operatore.setRuoli(ruoli); 
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);
